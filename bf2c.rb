@@ -21,7 +21,7 @@ end
 head = "#include <stdio.h>
 #include <stdlib.h>
 
-int tSize        = 1;
+int tSize        = 100;
 int resizeFactor = 2;
 
 int  tInd = 0;
@@ -50,7 +50,7 @@ void getChar(void) {
   writeTape((int) getchar());
 }
 
-int readTape() {
+int readTape(void) {
   index();
   return tape[tInd];
 }
@@ -60,7 +60,7 @@ void writeTape(int val) {
   tape[tInd] = val;
 }
 
-void index() {
+void index(void) {
   if (tInd >= tSize) {
     int newSize = tSize;
     while (newSize <= tInd) newSize *= resizeFactor;

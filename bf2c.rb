@@ -82,20 +82,58 @@ end
 
 puts head
 
-program.each do |c|
+i = 0
+while i < program.length
+  c = program[i]
   case c
   when '>'
     indent()
-    puts "tInd++;"
+    count = 1
+    until program[i + count] != '>'
+      count += 1
+    end
+    print "tInd += "
+    print count
+    print ";"
+    puts
+    i += count
+    next
   when '<'
     indent()
-    puts "tInd--;"
+    count = 1
+    until program[i + count] != '<'
+      count += 1
+    end
+    print "tInd -= "
+    print count
+    print ";"
+    puts
+    i += count
+    next
   when '+'
     indent()
-    puts "writeTape(readTape() + 1);"
+    count = 1
+    until program[i + count] != '+'
+      count += 1
+    end
+    print "writeTape(readTape() + "
+    print count
+    print ");"
+    puts
+    i += count
+    next
   when '-'
     indent()
-    puts "writeTape(readTape() - 1);"
+    count = 1
+    until program[i + count] != '-'
+      count += 1
+    end
+    print "writeTape(readTape() - "
+    print count
+    print ");"
+    puts
+    i += count
+    next
   when ','
     indent()
     puts("getChar();")
@@ -111,6 +149,7 @@ program.each do |c|
     indent()
     puts("}")
   end
+  i += 1
 end
 
 puts tail

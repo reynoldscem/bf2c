@@ -10,10 +10,10 @@ elsif !File.exists? filename
 elsif !File.readable? filename
   puts "File not readable"
 else
-  program = IO.read(filename).scan(/>|<|\+|-|\.|,|\[|\]/)
+  @program = IO.read(filename).scan(/>|<|\+|-|\.|,|\[|\]/)
 end
 
-if program.nil? || program.length.zero?
+if @program.nil? || @program.length.zero?
   puts "No bf to convert"
   exit
 end
@@ -21,11 +21,11 @@ end
 head = "#include <stdio.h>
 #include <stdlib.h>
 
-int tSize        = 100;
+int tSize        = 350;
 int resizeFactor = 2;
 
-int  tInd = 0;
-int* tape;
+int   tInd = 0;
+char* tape;
 
 void init (void);
 void index(void);
@@ -64,7 +64,7 @@ void index(void) {
   if (tInd >= tSize) {
     int newSize = tSize;
     while (newSize <= tInd) newSize *= resizeFactor;
-    int* tempArray = calloc(newSize, sizeof(int));
+    char* tempArray = calloc(newSize, sizeof(int));
     for (int i = 0; i < tSize; i++) tempArray[i] = tape[i];
     free(tape);
     tape = tempArray;
@@ -80,59 +80,37 @@ def indent()
   print(@indentStr * @indentLevel)
 end
 
+def countToken(char)
+  count = 1
+  count += 1 until @program[@i + count] != char
+  @i += count
+  count
+end
+
 puts head
 
-i = 0
-while i < program.length
-  c = program[i]
-  case c
+@i = 0
+while @i < @program.length
+  case @program[@i]
   when '>'
     indent()
-    count = 1
-    until program[i + count] != '>'
-      count += 1
-    end
-    print "tInd += "
-    print count
-    print ";"
+    print "tInd += ", countToken('>'), ";"
     puts
-    i += count
     next
   when '<'
     indent()
-    count = 1
-    until program[i + count] != '<'
-      count += 1
-    end
-    print "tInd -= "
-    print count
-    print ";"
+    print "tInd -= ", countToken('<'), ";"
     puts
-    i += count
     next
   when '+'
     indent()
-    count = 1
-    until program[i + count] != '+'
-      count += 1
-    end
-    print "writeTape(readTape() + "
-    print count
-    print ");"
+    print "writeTape(readTape() + ", countToken('+'), ");"
     puts
-    i += count
     next
   when '-'
     indent()
-    count = 1
-    until program[i + count] != '-'
-      count += 1
-    end
-    print "writeTape(readTape() - "
-    print count
-    print ");"
+    print "writeTape(readTape() - ", countToken('-'), ");"
     puts
-    i += count
     next
   when ','
     indent()
@@ -142,14 +120,14 @@ while i < program.length
     puts("putChar();")
   when '['
     indent()
-    puts("while(readTape() != 0) {")
+    puts("while(readTape()) {")
     @indentLevel += 1;
   when ']'
     @indentLevel -= 1;
     indent()
     puts("}")
   end
-  i += 1
+  @i += 1
 end
 
 puts tail
